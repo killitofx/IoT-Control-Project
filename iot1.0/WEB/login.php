@@ -10,7 +10,7 @@
 <body>
 
 <?php
-error_reporting(E_ALL || ~E_NOTICE);
+//error_reporting(E_ALL || ~E_NOTICE);
 session_start();
 
 require_once 'function/functions.php';
