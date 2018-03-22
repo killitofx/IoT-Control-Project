@@ -7,4 +7,6 @@ urlpatterns = [
     path('cn/<int:id>/<int:status>', views.i_change_status, name="i_change_status"),
     path('cn/<str:name>/<int:status>', views.n_change_status, name="n_change_status"),
     path('time/', views.get_time),
+    path('gc/', views.get_is_change),
+    path('cgc/<int:id>', views.update_is_change),
 ]

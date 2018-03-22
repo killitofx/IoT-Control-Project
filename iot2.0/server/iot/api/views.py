@@ -9,7 +9,7 @@ def get_id(request,id):
         Port.objects.get(pk=id)
         data = Port.objects.get(pk=id)
         response = JsonResponse({'id': data.id, 'name': data.port_name, 'type': data.port_type, 'state': data.port_state, 'change': data.is_change})
-        Port.objects.filter(pk=id).update(is_change=0)
+        #Port.objects.filter(pk=id).update(is_change=0)
         return response
     except:
         return HttpResponse(status=404)
@@ -30,23 +30,43 @@ def get_time(request):
 
 def i_change_status(requests, id, status):
     try:
-        Port.objects.get(pk=id)
-        Port.objects.filter(pk=id).update(port_state=status)
-        Port.objects.filter(pk=id).update(is_change=1)
-        return HttpResponse(status=403)
+        port = Port.objects.get(pk=id)
+        if port.port_state == status:
+            return HttpResponse(status=403)
+        else:
+            Port.objects.filter(pk=id).update(port_state=status)
+            Port.objects.filter(pk=id).update(is_change=1)
+            return HttpResponse(status=200)
     except:
         return HttpResponse(status=404)
 
 def n_change_status(requests,name,status):
     try:
-        Port.objects.get(port_name=name)
-        Port.objects.filter(port_name=name).update(port_state=status)
-        Port.objects.filter(port_name=name).update(is_change=1)
-        return HttpResponse(status=403)
+        port = Port.objects.get(port_name=name)
+        if port.port_state == status:
+            return HttpResponse(status=403)
+        else:
+            Port.objects.filter(port_name=name).update(port_state=status)
+            Port.objects.filter(port_name=name).update(is_change=1)
+            return HttpResponse(status=200)
     except:
         return HttpResponse(status=404)
 
+def get_is_change(request):
+    response = {}
+    i = 0
+    for obj in Port.objects.filter(is_change=1):
+        response[i] = obj.id
+        i += 1
+    return JsonResponse(response)
 
+def update_is_change(request,id):
+    try:
+        Port.objects.get(pk=id)
+        Port.objects.filter(pk=id).update(is_change=0)
+        return HttpResponse(status=403)
+    except:
+        return HttpResponse(status=404)
 
 # def detail(request,port_id):
 #     context = {}
