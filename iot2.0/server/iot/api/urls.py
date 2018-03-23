@@ -9,4 +9,6 @@ urlpatterns = [
     path('time/', views.get_time),
     path('gc/', views.get_is_change),
     path('cgc/<int:id>', views.update_is_change),
+    path('tc/', views.time_c),
+    path('atc/', views.add_time_c),
 ]

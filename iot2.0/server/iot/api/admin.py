@@ -7,5 +7,5 @@ class BlogTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Time)
 class BlogAdmin(admin.ModelAdmin):
-    list_display = ('port_id', 'ctrl', 'loop', 's_time', 'c_time')
+    list_display = ('port_id', 'ctrl', 'loop', 's_time', 'c_time', 'is_change')
 # Register your models here.

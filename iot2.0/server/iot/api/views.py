@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, JsonResponse, FileResponse
-from .models import Port
+from .models import Port, Time
 import time
 
 # Create your views here.
@@ -68,7 +68,27 @@ def update_is_change(request,id):
     except:
         return HttpResponse(status=404)
 
-# def detail(request,port_id):
-#     context = {}
-#     context['data'] = get_object_or_404(Port, pk=port_id)
-#     return render_to_response('port_detail.html', context)
+def time_c(request):
+    now = int(time.strftime("%H%M", time.localtime()))
+    for obj in Time.objects.filter(ctrl=1, s_time__lte=now, is_change=0):
+        port = obj.port_id
+        Port.objects.filter(pk=port, port_type=0).update(port_state=1, is_change=1)
+        Time.objects.filter(port_id=port).update(is_change=1)
+    # #
+    for obj in Time.objects.filter(ctrl=1, c_time__lte=now, is_change=1):
+        port = obj.port_id
+        Port.objects.filter(pk=port, port_type=0).update(port_state=0, is_change=1)
+        Time.objects.filter(port_id=port).update(is_change=0)
+    Time.objects.filter(ctrl=1, loop=0, c_time__lt=now).delete()
+    return HttpResponse(status=403)
+
+def add_time_c(request):
+    try:
+        s_time = request.GET.get('st')
+        c_time = request.GET.get('ct')
+        id = request.GET.get('id')
+        loop = request.GET.get('loop')
+        Time.objects.create(port_id=id, ctrl=1, loop=loop, s_time=s_time, c_time=c_time, is_change=0)
+        return HttpResponse(status=403)
+    except:
+        return HttpResponse(status=404)
